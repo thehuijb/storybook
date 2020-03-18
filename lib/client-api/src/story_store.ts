@@ -195,7 +195,7 @@ export default class StoryStore extends EventEmitter {
   };
 
   addStory(
-    { id, kind, name, storyFn: original, parameters = {} }: AddStoryArgs,
+    { id, kind, name, componentTags, storyTags, storyFn: original, parameters = {} }: AddStoryArgs,
     {
       getDecorators,
       applyDecorators,
@@ -219,6 +219,8 @@ export default class StoryStore extends EventEmitter {
       id,
       kind,
       name,
+      componentTags,
+      storyTags,
       story: name, // legacy
     };
 
@@ -255,7 +257,7 @@ export default class StoryStore extends EventEmitter {
     // existing clients (at the time?!), e.g. storyshots/chromatic
     // are not necessarily equipped to process them
     if (!isStoryDocsOnly(parameters)) {
-      this.addLegacyStory({ kind, name, storyFn, parameters });
+      this.addLegacyStory({ kind, name, componentTags, storyTags, storyFn, parameters });
     }
 
     // Store 1-based order of kind loading to preserve sorting on HMR
@@ -304,11 +306,15 @@ export default class StoryStore extends EventEmitter {
   addLegacyStory({
     kind,
     name,
+    componentTags,
+    storyTags,
     storyFn,
     parameters,
   }: {
     kind: string;
     name: string;
+    componentTags?: string;
+    storyTags?: string;
     storyFn: StoryFn;
     parameters: Parameters;
   }) {
@@ -324,6 +330,8 @@ export default class StoryStore extends EventEmitter {
 
     this._legacydata[k as string].stories[toKey(name)] = {
       name,
+      componentTags,
+      storyTags,
       // kind,
       index: getId(),
       story: storyFn,

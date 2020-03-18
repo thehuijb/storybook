@@ -25,6 +25,8 @@ export interface StoryContext {
   id: string;
   name: string;
   kind: string;
+  componentTags?: string;
+  storyTags?: string;
   [key: string]: any;
   parameters: Parameters;
   hooks?: HooksContext;
@@ -64,6 +66,8 @@ export interface AddStoryArgs<StoryFnReturnType = unknown> {
   id: string;
   kind: string;
   name: string;
+  componentTags: string;
+  storyTags: string;
   storyFn: StoryFn<StoryFnReturnType>;
   parameters: Parameters;
 }
@@ -82,7 +86,9 @@ export interface StoryApi<StoryFnReturnType = unknown> {
   add: (
     storyName: string,
     storyFn: StoryFn<StoryFnReturnType>,
-    parameters?: Parameters
+    parameters?: Parameters,
+    componentTags?: string,
+    storyTags?: string
   ) => StoryApi<StoryFnReturnType>;
   addDecorator: (decorator: DecoratorFunction<StoryFnReturnType>) => StoryApi<StoryFnReturnType>;
   addParameters: (parameters: Parameters) => StoryApi<StoryFnReturnType>;

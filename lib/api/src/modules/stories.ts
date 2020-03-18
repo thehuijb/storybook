@@ -33,6 +33,7 @@ export interface SubAPI {
 interface Group {
   id: StoryId;
   name: string;
+  componentTags: string;
   children: StoryId[];
   parent: StoryId;
   depth: number;
@@ -45,6 +46,8 @@ interface StoryInput {
   id: StoryId;
   name: string;
   kind: string;
+  componentTags: string;
+  storyTags: string;
   children: string[];
   parameters: {
     filename: string;
@@ -221,7 +224,7 @@ const initStoriesApi = ({
     );
 
     const storiesHashOutOfOrder = Object.values(input).reduce((acc, item) => {
-      const { kind, parameters } = item;
+      const { kind, componentTags, parameters } = item;
       // FIXME: figure out why parameters is missing when used with react-native-server
       const {
         hierarchyRootSeparator: rootSeparator = undefined,
@@ -281,6 +284,7 @@ Did you create a path that uses the separator char accidentally, such as 'Vue <d
             ...group,
             id,
             parent,
+            componentTags,
             depth: index,
             children: [],
             isComponent: false,
@@ -295,11 +299,33 @@ Did you create a path that uses the separator char accidentally, such as 'Vue <d
       // Ok, now let's add everything to the store
       rootAndGroups.forEach((group, index) => {
         const child = paths[index + 1];
-        const { id } = group;
+        const {
+          id,
+          name,
+          componentTags: groupTags,
+          parent,
+          depth,
+          isComponent,
+          isRoot,
+          isLeaf,
+        } = group;
         acc[id] = merge(acc[id] || {}, {
-          ...group,
+          id,
+          name,
+          parent,
+          depth,
+          isComponent,
+          isRoot,
+          isLeaf,
           ...(child && { children: [child] }),
         });
+        if (groupTags) {
+          if (!acc[id].componentTags) {
+            acc[id].componentTags = groupTags;
+          } else if (!acc[id].componentTags.includes(groupTags)) {
+            acc[id].componentTags += `|${groupTags}`;
+          }
+        }
       });
 
       const story = { ...item, parent: rootAndGroups[rootAndGroups.length - 1].id, isLeaf: true };

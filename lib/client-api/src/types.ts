@@ -48,6 +48,8 @@ export interface AddStoryArgs {
   id: string;
   kind: string;
   name: string;
+  componentTags?: string;
+  storyTags?: string;
   storyFn: StoryFn;
   parameters: Parameters;
 }

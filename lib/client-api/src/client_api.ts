@@ -37,6 +37,8 @@ const merge = (a: any, b: any) =>
 const defaultContext: StoryContext = {
   id: 'unspecified',
   name: 'unspecified',
+  componentTags: 'unspecified',
+  storyTags: 'unspecified',
   kind: 'unspecified',
   parameters: {},
 };
@@ -223,7 +225,7 @@ export default class ClientApi {
       };
     });
 
-    api.add = (storyName, storyFn, parameters = {}) => {
+    api.add = (storyName, storyFn, parameters = {}, componentTags, storyTags) => {
       hasAdded = true;
 
       const id = parameters.__id || toId(kind, storyName);
@@ -265,6 +267,8 @@ export default class ClientApi {
           id,
           kind,
           name: storyName,
+          componentTags,
+          storyTags,
           storyFn,
           parameters: allParam,
         },

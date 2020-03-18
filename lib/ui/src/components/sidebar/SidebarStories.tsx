@@ -66,6 +66,7 @@ export const Link = ({
   id,
   prefix,
   name,
+  tags,
   children,
   isLeaf,
   isComponent,
@@ -80,6 +81,7 @@ export const Link = ({
         <PlainRouterLink
           title={name}
           id={prefix + id}
+          data-tags={tags}
           to={`/${refinedViewMode(viewMode, isLeaf && isComponent)}/${targetId(childIds) || id}`}
           onKeyUp={onKeyUp}
           onClick={onClick}
@@ -89,7 +91,7 @@ export const Link = ({
       )}
     </Location>
   ) : (
-    <PlainLink title={name} id={prefix + id} onKeyUp={onKeyUp} onClick={onClick}>
+    <PlainLink title={name} id={prefix + id} data-tags={tags} onKeyUp={onKeyUp} onClick={onClick}>
       {children}
     </PlainLink>
   );
@@ -104,11 +106,13 @@ Link.propTypes = {
   onKeyUp: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   childIds: PropTypes.arrayOf(PropTypes.string),
+  tags: PropTypes.string,
   isExpanded: PropTypes.bool,
 };
 Link.defaultProps = {
   childIds: null,
   isExpanded: false,
+  tags: undefined,
 };
 
 export interface StoriesProps {
